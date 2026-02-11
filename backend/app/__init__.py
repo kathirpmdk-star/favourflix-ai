@@ -1,0 +1,1 @@
+"""FavourFlix-AI Backend Application"""
