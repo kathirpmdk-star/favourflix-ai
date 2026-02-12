@@ -48,36 +48,42 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   }
   
   return (
-    <div className="flex items-center justify-center space-x-2 mt-12 mb-8">
+    <div className="flex items-center justify-center space-x-3 mt-14 mb-12 fade-in">
       {/* Previous Button */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`px-4 py-2 rounded-lg font-medium transition-all ${
+        className={`group px-5 py-2.5 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 ${
           currentPage === 1
-            ? 'bg-ott-light text-gray-600 cursor-not-allowed'
-            : 'bg-ott-light text-white hover:bg-accent-primary hover:shadow-glow'
+            ? 'bg-ott-light text-gray-600 cursor-not-allowed opacity-50'
+            : 'bg-gradient-to-r from-ott-light to-ott-gray text-white hover:from-accent-primary hover:to-accent-secondary hover:shadow-lg hover:scale-105'
         }`}
       >
-        Previous
+        <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        <span>Previous</span>
       </button>
       
       {/* Page Numbers */}
       <div className="flex items-center space-x-2">
         {pageNumbers.map((page, index) => (
           page === '...' ? (
-            <span key={`ellipsis-${index}`} className="px-2 text-gray-500">...</span>
+            <span key={`ellipsis-${index}`} className="px-2 text-gray-500 font-bold">...</span>
           ) : (
             <button
               key={page}
               onClick={() => onPageChange(page)}
-              className={`w-10 h-10 rounded-lg font-medium transition-all ${
+              className={`relative w-11 h-11 rounded-lg font-semibold transition-all duration-300 overflow-hidden group ${
                 currentPage === page
-                  ? 'bg-accent-primary text-white shadow-glow'
-                  : 'bg-ott-light text-white hover:bg-ott-gray'
+                  ? 'bg-gradient-to-r from-accent-primary to-accent-secondary text-white shadow-lg shadow-accent-primary/50 scale-110'
+                  : 'bg-ott-light text-white hover:bg-ott-gray hover:scale-105'
               }`}
             >
-              {page}
+              <span className="relative z-10">{page}</span>
+              {currentPage !== page && (
+                <span className="absolute inset-0 bg-gradient-to-r from-accent-primary/30 to-accent-secondary/30 transform scale-0 group-hover:scale-100 transition-transform duration-300"></span>
+              )}
             </button>
           )
         ))}
@@ -87,13 +93,16 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`px-4 py-2 rounded-lg font-medium transition-all ${
+        className={`group px-5 py-2.5 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 ${
           currentPage === totalPages
-            ? 'bg-ott-light text-gray-600 cursor-not-allowed'
-            : 'bg-ott-light text-white hover:bg-accent-primary hover:shadow-glow'
+            ? 'bg-ott-light text-gray-600 cursor-not-allowed opacity-50'
+            : 'bg-gradient-to-r from-ott-light to-ott-gray text-white hover:from-accent-primary hover:to-accent-secondary hover:shadow-lg hover:scale-105'
         }`}
       >
-        Next
+        <span>Next</span>
+        <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
       </button>
     </div>
   );

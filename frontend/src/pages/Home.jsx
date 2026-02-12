@@ -113,14 +113,19 @@ const Home = () => {
             <ExplanationSection explanation={explanation} />
             
             {/* Movie Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 fade-in">
-              {movies.map((movie) => (
-                <MovieCard
-                  key={movie.id}
-                  movie={movie}
-                  onFavourite={handleFavourite}
-                  isFavourite={favouriteIds.has(movie.id)}
-                />
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+              {movies.map((movie, index) => (
+                <div 
+                  key={movie.id} 
+                  className="fade-in"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  <MovieCard
+                    movie={movie}
+                    onFavourite={handleFavourite}
+                    isFavourite={favouriteIds.has(movie.id)}
+                  />
+                </div>
               ))}
             </div>
             
