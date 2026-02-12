@@ -1,32 +1,32 @@
 /**
  * Hero Section Component
  */
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 
 const Hero = ({ onSearch, isLoading }) => {
   const [mood, setMood] = useState('');
   
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     if (mood.trim()) {
       onSearch(mood.trim());
     }
-  };
+  }, [mood, onSearch]);
   
-  const moodSuggestions = [
+  const moodSuggestions = useMemo(() => [
     { text: 'Adventurous and Excited', icon: 'rocket' },
     { text: 'Need a Good Laugh', icon: 'smile' },
     { text: 'Thrilling and Suspenseful', icon: 'lightning' },
     { text: 'Romantic and Heartfelt', icon: 'heart' },
     { text: 'Nostalgic and Reflective', icon: 'star' },
     { text: 'Motivational and Inspiring', icon: 'fire' }
-  ];
+  ], []);
   
-  const handleSuggestionClick = (suggestion) => {
+  const handleSuggestionClick = useCallback((suggestion) => {
     setMood(suggestion.text);
-  };
+  }, []);
   
-  const getIcon = (iconName) => {
+  const getIcon = useCallback((iconName) => {
     const icons = {
       rocket: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />,
       smile: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />,
@@ -36,7 +36,7 @@ const Hero = ({ onSearch, isLoading }) => {
       fire: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
     };
     return icons[iconName] || icons.star;
-  };
+  }, []);
   
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-ott-gray via-ott-dark to-ott-dark">

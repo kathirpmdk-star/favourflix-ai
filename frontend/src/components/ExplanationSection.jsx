@@ -2,7 +2,9 @@
  * Explanation Section Component - Premium Edition
  * Displays AI-generated mood explanation
  */
-const ExplanationSection = ({ explanation }) => {
+import { memo } from 'react';
+
+const ExplanationSection = memo(({ explanation }) => {
   if (!explanation) return null;
   
   return (
@@ -36,6 +38,6 @@ const ExplanationSection = ({ explanation }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ExplanationSection;

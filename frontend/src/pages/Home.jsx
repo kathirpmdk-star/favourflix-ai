@@ -1,7 +1,7 @@
 /**
  * Home Page - Movie Discovery based on Mood
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Hero from '../components/Hero';
 import MovieCard from '../components/MovieCard';
 import Pagination from '../components/Pagination';
@@ -18,27 +18,32 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [currentMood, setCurrentMood] = useState('');
   const [favouriteIds, setFavouriteIds] = useState(new Set());
+  const abortControllerRef = useRef(null);
   
-  // Load favourites on mount
-  useEffect(() => {
-    loadFavourites();
-  }, []);
-  
-  const loadFavourites = async () => {
+  const loadFavourites = useCallback(async () => {
     try {
       const favourites = await getFavourites();
       const ids = new Set(favourites.map(f => f.movie_id));
       setFavouriteIds(ids);
     } catch (err) {
-      console.error('Failed to load favourites:', err);
+      // Silent fail for favourites loading
     }
-  };
+  }, []);
   
-  const handleSearch = async (mood, page = 1) => {
+  // Load favourites on mount
+  useEffect(() => {
+    loadFavourites();
+  }, [loadFavourites]);
+  
+  const handleSearch = useCallback(async (mood, page = 1) => {
+    // Cancel previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
     setIsLoading(true);
     setError(null);
     
-    // Store current mood for pagination
     if (mood !== undefined) {
       setCurrentMood(mood);
     }
@@ -52,29 +57,28 @@ const Home = () => {
       setCurrentPage(data.page);
       setTotalPages(data.total_pages);
       
-      // Scroll to results
       if (page === 1) {
         setTimeout(() => {
           window.scrollTo({ top: 600, behavior: 'smooth' });
         }, 100);
       }
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to get recommendations. Please try again.');
-      console.error('Search error:', err);
+      if (err.name !== 'CanceledError') {
+        setError(err.response?.data?.detail || 'Failed to get recommendations. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentMood]);
   
-  const handlePageChange = (page) => {
+  const handlePageChange = useCallback((page) => {
     handleSearch(undefined, page);
     window.scrollTo({ top: 600, behavior: 'smooth' });
-  };
+  }, [handleSearch]);
   
-  const handleFavourite = async (movie) => {
+  const handleFavourite = useCallback(async (movie) => {
     try {
       if (favouriteIds.has(movie.id)) {
-        // Remove from favourites
         await removeFavourite(movie.id);
         setFavouriteIds(prev => {
           const newSet = new Set(prev);
@@ -82,15 +86,13 @@ const Home = () => {
           return newSet;
         });
       } else {
-        // Add to favourites
         await addFavourite(movie);
         setFavouriteIds(prev => new Set([...prev, movie.id]));
       }
     } catch (err) {
-      console.error('Failed to update favourite:', err);
-      alert(err.response?.data?.detail || 'Failed to update favourite');
+      setError(err.response?.data?.detail || 'Failed to update favourite');
     }
-  };
+  }, [favouriteIds]);
   
   return (
     <div className="min-h-screen">

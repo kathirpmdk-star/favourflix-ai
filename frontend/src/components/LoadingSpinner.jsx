@@ -1,7 +1,9 @@
 /**
  * Loading Spinner Component - Premium Edition
  */
-const LoadingSpinner = ({ size = 'large', message = 'Loading...' }) => {
+import { memo } from 'react';
+
+const LoadingSpinner = memo(({ size = 'large', message = 'Loading...' }) => {
   const sizeClasses = {
     small: 'w-8 h-8 border-2',
     medium: 'w-12 h-12 border-3',
@@ -25,6 +27,6 @@ const LoadingSpinner = ({ size = 'large', message = 'Loading...' }) => {
       )}
     </div>
   );
-};
+});
 
 export default LoadingSpinner;

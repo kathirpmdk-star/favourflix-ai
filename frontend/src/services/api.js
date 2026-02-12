@@ -14,6 +14,20 @@ const api = axios.create({
   timeout: 30000, // 30 seconds
 });
 
+// Response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.code === 'ECONNABORTED') {
+      throw new Error('Request timeout - please try again');
+    }
+    if (!error.response) {
+      throw new Error('Network error - please check your connection');
+    }
+    throw error;
+  }
+);
+
 // TMDB image base URLs
 export const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 export const POSTER_SIZE = 'w500';
