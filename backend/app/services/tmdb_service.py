@@ -8,6 +8,8 @@ class TMDBService:
     """Service for interacting with The Movie Database (TMDB) API"""
     
     BASE_URL = "https://api.themoviedb.org/3"
+    # Generic user-agent that works across all platforms
+    USER_AGENT = "FavourFlix-AI/1.0 (AI-Powered Movie Recommendation Platform)"
     
     def __init__(self):
         """Initialize TMDB service"""
@@ -50,8 +52,9 @@ class TMDBService:
             
             # Increased timeout and better connection settings
             timeout = httpx.Timeout(30.0, connect=15.0)
+            headers = {"User-Agent": self.USER_AGENT}
             async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
-                response = await client.get(url, params=params)
+                response = await client.get(url, params=params, headers=headers)
                 print(f"✅ TMDB Response Status: {response.status_code}")
                 response.raise_for_status()
                 data = response.json()
@@ -130,8 +133,9 @@ class TMDBService:
         
         try:
             timeout = httpx.Timeout(30.0, connect=15.0)
+            headers = {"User-Agent": self.USER_AGENT}
             async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
-                response = await client.get(url, params=params)
+                response = await client.get(url, params=params, headers=headers)
                 response.raise_for_status()
                 return response.json()
                 
@@ -160,8 +164,9 @@ class TMDBService:
         
         try:
             timeout = httpx.Timeout(30.0, connect=15.0)
+            headers = {"User-Agent": self.USER_AGENT}
             async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
-                response = await client.get(url, params=params)
+                response = await client.get(url, params=params, headers=headers)
                 response.raise_for_status()
                 data = response.json()
                 
