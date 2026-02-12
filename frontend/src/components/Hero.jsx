@@ -24,7 +24,8 @@ const Hero = ({ onSearch, isLoading }) => {
   
   const handleSuggestionClick = useCallback((suggestion) => {
     setMood(suggestion.text);
-  }, []);
+    onSearch(suggestion.text);
+  }, [onSearch]);
   
   const getIcon = useCallback((iconName) => {
     const icons = {
