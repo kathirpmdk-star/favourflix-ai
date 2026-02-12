@@ -12,13 +12,18 @@ from .routers import api
 async def lifespan(app: FastAPI):
     """Lifespan event handler for startup and shutdown"""
     # Startup: Initialize database tables
-    print("🚀 Starting FavourFlix-AI Backend...")
-    print("📊 Initializing database...")
+    import logging
+    logger = logging.getLogger("uvicorn")
+    logger.info("Starting FavourFlix-AI Backend...")
+    logger.info("Initializing database...")
     init_db()
-    print("✅ Database initialized successfully")
+    logger.info("Database initialized successfully")
     yield
-    # Shutdown
-    print("👋 Shutting down FavourFlix-AI Backend...")
+    # Shutdown: Clean up resources
+    logger.info("Shutting down FavourFlix-AI Backend...")
+    from .services.tmdb_service import TMDBService
+    await TMDBService.close_client()
+    logger.info("Cleanup completed")
 
 
 # Create FastAPI application
