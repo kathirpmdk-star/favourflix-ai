@@ -30,10 +30,11 @@ const Favourites = () => {
   
   const handleRemoveFavourite = useCallback(async (movie) => {
     try {
-      await removeFavourite(movie.movie_id);
-      setFavourites(prev => prev.filter(f => f.movie_id !== movie.movie_id));
+      await removeFavourite(movie.id);
+      setFavourites(prev => prev.filter(f => f.movie_id !== movie.id));
     } catch (err) {
       setError('Failed to remove favourite. Please try again.');
+      console.error('Remove favourite error:', err);
     }
   }, []);
   
