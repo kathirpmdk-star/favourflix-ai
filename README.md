@@ -12,6 +12,83 @@ An AI-powered movie recommendation platform that suggests movies based on your c
 - **Responsive Design**: Modern, Netflix-inspired UI built with React and Tailwind CSS
 - **Production-Ready**: Optimized backend with connection pooling and structured logging
 
+## System Architecture
+
+FavourFlix-AI follows a modern three-tier architecture with clear separation of concerns:
+
+### Architecture Overview
+
+```
+┌─────────────────┐
+│   React Frontend │ (Port 5173)
+│   - Vite Dev     │
+│   - Tailwind CSS │
+└────────┬─────────┘
+         │ HTTP/Axios
+         ▼
+┌─────────────────┐
+│  FastAPI Backend │ (Port 8000)
+│  - RESTful API   │
+│  - CORS Enabled  │
+└────────┬─────────┘
+         │
+    ┌────┴────┬──────────────┬────────────┐
+    ▼         ▼              ▼            ▼
+┌────────┐ ┌──────┐  ┌────────────┐  ┌──────┐
+│PostgreSQL│ │Gemini│  │  TMDB API  │  │ HTTP │
+│ Database │ │  AI  │  │ (Movies DB)│  │ Pool │
+└──────────┘ └──────┘  └────────────┘  └──────┘
+```
+
+### Component Breakdown
+
+#### Frontend Layer (React + Vite)
+- **Pages**: Home, Favourites, History
+- **Components**: MovieCard, Hero, Navbar, Pagination, LoadingSpinner, ExplanationSection
+- **Services**: API client with Axios for HTTP requests
+- **State Management**: React Hooks (useState, useCallback, useMemo)
+- **Routing**: React Router DOM for client-side navigation
+
+#### Backend Layer (FastAPI)
+- **API Routes**: `/api/recommend`, `/api/favourites`, `/api/history`
+- **Services**:
+  - **Gemini Service**: Analyzes mood and generates search queries
+  - **TMDB Service**: Fetches movie data with connection pooling
+  - **Recommendation Service**: Orchestrates mood-to-movie pipeline
+- **Models**: SQLAlchemy ORM models for Favourites and History
+- **Schemas**: Pydantic validation for request/response data
+- **Middleware**: CORS, logging, error handling
+
+#### Data Layer
+- **PostgreSQL Database**: Persistent storage for user data
+  - `favourites`: movie_id, title, overview, poster_path, vote_average, release_date
+  - `history`: mood, explanation, created_at
+- **External APIs**:
+  - Google Gemini AI: Natural language understanding
+  - TMDB API: Movie metadata and images
+
+### Request Flow
+
+1. **User Input**: User enters mood description in frontend
+2. **API Request**: Frontend sends POST request to `/api/recommend`
+3. **Mood Analysis**: Gemini AI processes mood and generates search queries
+4. **Movie Fetch**: TMDB service retrieves movies using generated queries
+5. **Data Storage**: Mood and explanation saved to history table
+6. **Response**: Backend returns formatted movie list with metadata
+7. **UI Render**: Frontend displays movies in grid with ratings and images
+8. **User Actions**: 
+   - Add to favorites (POST `/api/favourites`)
+   - Remove from favorites (DELETE `/api/favourites/{id}`)
+   - View history (GET `/api/history`)
+
+### Key Design Patterns
+
+- **Repository Pattern**: Database operations abstracted through models
+- **Service Layer Pattern**: Business logic separated from route handlers
+- **Singleton Pattern**: Shared HTTP client for connection pooling
+- **Component Composition**: Reusable React components with props
+- **Memoization**: Performance optimization with React.memo and hooks
+
 ## Tech Stack
 
 ### Backend
@@ -276,18 +353,6 @@ Changes are merged from feature branches to main after testing.
 **Build Errors:**
 - Delete `node_modules` and run `npm install` again
 - Clear Vite cache: `rm -rf frontend/.vite`
-
-## License
-
-This project is licensed under the MIT License.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
 
 ## Support
 
