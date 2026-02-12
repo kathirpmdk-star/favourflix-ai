@@ -53,7 +53,7 @@ class TMDBService:
             # Increased timeout and better connection settings
             timeout = httpx.Timeout(30.0, connect=15.0)
             headers = {"User-Agent": self.USER_AGENT}
-            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
+            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, http2=False) as client:
                 response = await client.get(url, params=params, headers=headers)
                 print(f"✅ TMDB Response Status: {response.status_code}")
                 response.raise_for_status()
@@ -134,7 +134,7 @@ class TMDBService:
         try:
             timeout = httpx.Timeout(30.0, connect=15.0)
             headers = {"User-Agent": self.USER_AGENT}
-            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
+            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, http2=False) as client:
                 response = await client.get(url, params=params, headers=headers)
                 response.raise_for_status()
                 return response.json()
@@ -165,7 +165,7 @@ class TMDBService:
         try:
             timeout = httpx.Timeout(30.0, connect=15.0)
             headers = {"User-Agent": self.USER_AGENT}
-            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
+            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, http2=False) as client:
                 response = await client.get(url, params=params, headers=headers)
                 response.raise_for_status()
                 data = response.json()
