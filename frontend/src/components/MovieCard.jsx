@@ -23,9 +23,12 @@ const MovieCard = ({ movie, onFavourite, isFavourite, showFavouriteButton = true
   
   return (
     <div
-      className="group relative rounded-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:z-10 hover:shadow-glow-strong"
+      className="group relative rounded-xl overflow-hidden cursor-pointer transform transition-all duration-500 hover:scale-110 hover:z-10 hover:shadow-2xl hover:shadow-accent-primary/30"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={{
+        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'
+      }}
     >
       {/* Movie Poster */}
       <div className="aspect-[2/3] overflow-hidden bg-ott-light">
@@ -42,7 +45,7 @@ const MovieCard = ({ movie, onFavourite, isFavourite, showFavouriteButton = true
           <img
             src={displayImage}
             alt={movie.title}
-            className="w-full h-full object-cover transition-all duration-300"
+            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
             onError={handleImageError}
             loading="lazy"
           />
@@ -50,10 +53,12 @@ const MovieCard = ({ movie, onFavourite, isFavourite, showFavouriteButton = true
       </div>
       
       {/* Hover Overlay */}
-      <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent transition-opacity duration-300 ${
+      <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent transition-all duration-500 ${
         isHovered ? 'opacity-100' : 'opacity-0'
       }`}>
-        <div className="absolute bottom-0 left-0 right-0 p-4 transform transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+        <div className={`absolute bottom-0 left-0 right-0 p-5 transform transition-all duration-500 ${
+          isHovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+        }`}>
           <h3 className="text-white font-bold text-lg mb-2 line-clamp-2">
             {movie.title}
           </h3>
