@@ -36,7 +36,7 @@ class GeminiService:
     def __init__(self):
         """Initialize Gemini AI client"""
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.model = genai.GenerativeModel(settings.GEMINI_MODEL)
     
     async def mood_to_genres(self, mood: str) -> Dict[str, any]:
         """
