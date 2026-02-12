@@ -56,8 +56,25 @@ class TMDBService:
                     "total_results": data.get("total_results", 0)
                 }
                 
+        except httpx.HTTPStatusError as e:
+            print(f"TMDB API HTTP Error {e.response.status_code}: {e.response.text}")
+            print(f"Request URL: {url}?with_genres={genres_str}")
+            return {
+                "results": [],
+                "page": 1,
+                "total_pages": 1,
+                "total_results": 0
+            }
         except httpx.HTTPError as e:
-            print(f"TMDB API error: {str(e)}")
+            print(f"TMDB API Connection Error: {str(e)}")
+            return {
+                "results": [],
+                "page": 1,
+                "total_pages": 1,
+                "total_results": 0
+            }
+        except Exception as e:
+            print(f"TMDB API Unexpected Error: {type(e).__name__} - {str(e)}")
             return {
                 "results": [],
                 "page": 1,
