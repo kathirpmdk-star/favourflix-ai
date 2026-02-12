@@ -18,7 +18,13 @@ const Navbar = () => {
           <Link to="/" className="flex items-center space-x-2 group">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z\" />\n              </svg>\n            </div>\n            <div className="text-2xl font-bold gradient-text transition-all duration-300 group-hover:tracking-wide\">\n              FavourFlix AI\n            </div>\n          </Link>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+              </svg>
+            </div>
+            <div className="text-2xl font-bold gradient-text transition-all duration-300 group-hover:tracking-wide">
+              FavourFlix AI
+            </div>
+          </Link>
           
           {/* Navigation Links */}
           <div className="flex items-center space-x-2">
