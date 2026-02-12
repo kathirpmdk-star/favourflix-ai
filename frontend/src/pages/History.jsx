@@ -1,7 +1,7 @@
 /**
  * History Page - Display mood search history
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { getHistory } from '../services/api';
 
@@ -10,11 +10,7 @@ const History = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  useEffect(() => {
-    loadHistory();
-  }, []);
-  
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -22,13 +18,16 @@ const History = () => {
       setHistory(data);
     } catch (err) {
       setError('Failed to load history. Please try again.');
-      console.error('Error loading history:', err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
   
-  const formatDate = (dateString) => {
+  useEffect(() => {
+    loadHistory();
+  }, [loadHistory]);
+  
+  const formatDate = useCallback((dateString) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInSeconds = Math.floor((now - date) / 1000);
@@ -45,7 +44,7 @@ const History = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
-  };
+  }, []);
   
   return (
     <div className="min-h-screen pt-24 pb-12">

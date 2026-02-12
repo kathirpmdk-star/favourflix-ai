@@ -1,7 +1,9 @@
 /**
  * Pagination Component
  */
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+import { memo } from 'react';
+
+const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
   const maxVisiblePages = 7;
   
   const getPageNumbers = () => {
@@ -106,6 +108,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       </button>
     </div>
   );
-};
+});
 
 export default Pagination;

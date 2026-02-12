@@ -1,7 +1,7 @@
 /**
  * Favourites Page - Display saved favourite movies
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import MovieCard from '../components/MovieCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { getFavourites, removeFavourite } from '../services/api';
@@ -11,11 +11,7 @@ const Favourites = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  useEffect(() => {
-    loadFavourites();
-  }, []);
-  
-  const loadFavourites = async () => {
+  const loadFavourites = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -23,21 +19,35 @@ const Favourites = () => {
       setFavourites(data);
     } catch (err) {
       setError('Failed to load favourites. Please try again.');
-      console.error('Error loading favourites:', err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
   
-  const handleRemoveFavourite = async (movie) => {
+  useEffect(() => {
+    loadFavourites();
+  }, [loadFavourites]);
+  
+  const handleRemoveFavourite = useCallback(async (movie) => {
     try {
       await removeFavourite(movie.movie_id);
       setFavourites(prev => prev.filter(f => f.movie_id !== movie.movie_id));
     } catch (err) {
-      console.error('Failed to remove favourite:', err);
-      alert('Failed to remove favourite. Please try again.');
+      setError('Failed to remove favourite. Please try again.');
     }
-  };
+  }, []);
+  
+  const formattedFavourites = useMemo(() => {
+    return favourites.map(movie => ({
+      id: movie.movie_id,
+      title: movie.title,
+      overview: movie.overview,
+      poster_path: movie.poster_path,
+      backdrop_path: movie.backdrop_path,
+      vote_average: movie.vote_average,
+      release_date: movie.release_date,
+    }));
+  }, [favourites]);
   
   return (
     <div className="min-h-screen pt-24 pb-12">
@@ -68,18 +78,10 @@ const Favourites = () => {
         {/* Favourites Grid */}
         {!isLoading && !error && favourites.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 fade-in">
-            {favourites.map((movie) => (
+            {formattedFavourites.map((movie) => (
               <MovieCard
                 key={movie.id}
-                movie={{
-                  id: movie.movie_id,
-                  title: movie.title,
-                  overview: movie.overview,
-                  poster_path: movie.poster_path,
-                  backdrop_path: movie.backdrop_path,
-                  vote_average: movie.vote_average,
-                  release_date: movie.release_date,
-                }}
+                movie={movie}
                 onFavourite={handleRemoveFavourite}
                 isFavourite={true}
               />
