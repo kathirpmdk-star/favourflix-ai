@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     
     # API Keys
     GEMINI_API_KEY: str
+    GEMINI_MODEL: str = "gemini-1.5-flash"
     TMDB_API_KEY: str
     
     # Server
