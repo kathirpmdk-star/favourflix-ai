@@ -48,7 +48,9 @@ class TMDBService:
             print(f"   Genres: {genres_str}")
             print(f"   API Key: {self.api_key[:10]}...{self.api_key[-4:]}")
             
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            # Increased timeout and better connection settings
+            timeout = httpx.Timeout(30.0, connect=15.0)
+            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
                 response = await client.get(url, params=params)
                 print(f"✅ TMDB Response Status: {response.status_code}")
                 response.raise_for_status()
@@ -127,7 +129,8 @@ class TMDBService:
         }
         
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            timeout = httpx.Timeout(30.0, connect=15.0)
+            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
                 response = await client.get(url, params=params)
                 response.raise_for_status()
                 return response.json()
@@ -156,7 +159,8 @@ class TMDBService:
         }
         
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            timeout = httpx.Timeout(30.0, connect=15.0)
+            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
                 response = await client.get(url, params=params)
                 response.raise_for_status()
                 data = response.json()
