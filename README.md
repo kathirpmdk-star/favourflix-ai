@@ -112,6 +112,86 @@ FavourFlix-AI follows a modern three-tier architecture with clear separation of 
 - **Favourites Table**: Stores user's favorite movies
 - **History Table**: Tracks mood-based search history
 
+## Frontend Design & Theme
+
+### Design Philosophy
+
+The frontend adopts a **premium dark theme** inspired by modern streaming platforms like Netflix, designed specifically for optimal movie browsing experience.
+
+### Theme Justification
+
+**Why Dark Theme?**
+- **Reduced Eye Strain**: Dark backgrounds are easier on the eyes during extended browsing sessions
+- **Content Focus**: Dark UI puts emphasis on colorful movie posters and imagery
+- **Industry Standard**: Users are familiar with dark themes from Netflix, Disney+, Prime Video
+- **Premium Feel**: Dark themes convey sophistication and premium quality
+- **Better Contrast**: Movie posters and text pop more effectively against dark backgrounds
+
+**Why Netflix-Inspired Design?**
+- **User Familiarity**: Leverages mental models users already know from popular streaming platforms
+- **Proven UX Patterns**: Netflix's design patterns are battle-tested with millions of users
+- **Professional Appearance**: Industry-leading aesthetics build trust and credibility
+- **Movie-Centric**: Design patterns optimized specifically for movie discovery and browsing
+
+### Color Palette
+
+```
+Primary Colors:
+- Background Dark: #0a0a0a (near-black for main background)
+- Background Gray: #1a1a1a (elevated surfaces, cards)
+- Background Light: #2a2a2a (hover states, inputs)
+
+Accent Colors:
+- Primary Accent: #e50914 (Netflix red - CTAs, highlights)
+- Secondary Accent: #f40612 (gradient variations)
+- Yellow: #fbbf24 (star ratings)
+
+Text Colors:
+- White: #ffffff (headings, primary text)
+- Gray-400: #9ca3af (secondary text, descriptions)
+- Gray-500: #6b7280 (placeholders, disabled text)
+```
+
+### Design Features
+
+#### Visual Elements
+- **Gradient Overlays**: Smooth color transitions on hero sections and cards
+- **Glass Morphism**: Backdrop blur effects for modern, premium feel
+- **Hover Animations**: Scale transforms (1.1x), shadow effects, and smooth transitions
+- **Loading States**: Custom animated spinners matching the theme
+
+#### Typography
+- **Font**: System fonts for optimal performance and readability
+- **Hierarchy**: Clear distinction between headings (5xl-7xl), body (base-xl), and captions (sm)
+- **Weight**: Strategic use of font weights (light, medium, semibold, black) for emphasis
+
+#### Interactive Elements
+- **Buttons**: Gradient backgrounds with hover effects and scale animations
+- **Cards**: Netflix-style hover expansion with backdrop image swap
+- **Forms**: Rounded inputs with border gradients and focus states
+- **Navigation**: Active state indicators with smooth transitions
+
+#### Responsive Design
+- **Mobile-First**: Layouts adapt from 320px to 4K displays
+- **Grid System**: CSS Grid and Flexbox for responsive movie grids
+- **Breakpoints**: Tailwind's standard breakpoints (sm, md, lg, xl, 2xl)
+- **Touch-Friendly**: Adequate spacing and tap targets for mobile users
+
+### User Experience Principles
+
+1. **Performance First**: Memoized components, lazy loading, optimized re-renders
+2. **Accessibility**: Semantic HTML, ARIA labels, keyboard navigation support
+3. **Visual Feedback**: Loading states, hover effects, disabled states clearly indicated
+4. **Error Handling**: User-friendly error messages without technical jargon
+5. **Progressive Enhancement**: Core functionality works even with JavaScript disabled
+
+### Component Design Patterns
+
+- **Atomic Design**: Components built from small, reusable building blocks
+- **Prop-Driven**: Components configured via props for maximum reusability
+- **Stateless Where Possible**: Minimized local state for better performance
+- **Controlled Components**: Form inputs managed by React state for consistency
+
 ## Prerequisites
 
 Before running this application, ensure you have the following installed:
