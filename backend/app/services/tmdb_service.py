@@ -13,34 +13,19 @@ class TMDBService:
     BASE_URL = "https://api.themoviedb.org/3"
     USER_AGENT = "FavourFlix-AI/1.0 (AI-Powered Movie Recommendation Platform)"
     
-    # Shared HTTP client for connection pooling
-    _client: Optional[httpx.AsyncClient] = None
-    
     def __init__(self):
         """Initialize TMDB service"""
         self.api_key = settings.TMDB_API_KEY
     
-    @classmethod
-    async def get_client(cls) -> httpx.AsyncClient:
-        """Get or create shared HTTP client with connection pooling"""
-        if cls._client is None or cls._client.is_closed:
-            timeout = httpx.Timeout(30.0, connect=15.0)
-            limits = httpx.Limits(max_connections=100, max_keepalive_connections=20)
-            cls._client = httpx.AsyncClient(
-                timeout=timeout,
-                follow_redirects=True,
-                http2=False,
-                limits=limits,
-                headers={"User-Agent": cls.USER_AGENT}
-            )
-        return cls._client
-    
-    @classmethod
-    async def close_client(cls):
-        """Close shared HTTP client"""
-        if cls._client and not cls._client.is_closed:
-            await cls._client.aclose()
-            cls._client = None
+    def _create_client(self) -> httpx.AsyncClient:
+        """Create a new HTTP client"""
+        timeout = httpx.Timeout(30.0, connect=15.0)
+        return httpx.AsyncClient(
+            timeout=timeout,
+            follow_redirects=True,
+            http2=False,
+            headers={"User-Agent": self.USER_AGENT}
+        )
     
     async def discover_movies(
         self, 
@@ -72,12 +57,13 @@ class TMDBService:
             "language": "en-US"
         }
         
+        client = self._create_client()
         try:
-            client = await self.get_client()
+            logger.info(f"TMDB discover request: genres={genres_str}, page={page}, sort={sort_by}")
             response = await client.get(url, params=params)
             response.raise_for_status()
             data = response.json()
-            logger.debug(f"TMDB discover: {len(data.get('results', []))} movies for genres {genres_str}")
+            logger.info(f"TMDB discover response: {len(data.get('results', []))} movies, total_results={data.get('total_results', 0)}")
             
             return {
                 "results": data.get("results", []),
@@ -87,17 +73,19 @@ class TMDBService:
             }
                 
         except httpx.HTTPStatusError as e:
-            logger.error(f"TMDB HTTP error {e.response.status_code}")
+            logger.error(f"TMDB HTTP error {e.response.status_code}: {e.response.text}")
             return self._empty_response()
-        except httpx.ConnectError:
-            logger.error("TMDB connection error")
+        except httpx.ConnectError as e:
+            logger.error(f"TMDB connection error: {type(e).__name__} - {str(e)}")
             return self._empty_response()
-        except httpx.TimeoutException:
-            logger.error("TMDB timeout error")
+        except httpx.TimeoutException as e:
+            logger.error(f"TMDB timeout error: {str(e)}")
             return self._empty_response()
         except Exception as e:
             logger.error(f"TMDB error: {type(e).__name__}: {str(e)}")
             return self._empty_response()
+        finally:
+            await client.aclose()
     
     async def get_movie_details(self, movie_id: int) -> Optional[Dict]:
         """
@@ -115,8 +103,8 @@ class TMDBService:
             "language": "en-US"
         }
         
+        client = self._create_client()
         try:
-            client = await self.get_client()
             response = await client.get(url, params=params)
             response.raise_for_status()
             return response.json()
@@ -124,6 +112,8 @@ class TMDBService:
         except httpx.HTTPError as e:
             logger.error(f"TMDB movie details error: {str(e)}")
             return None
+        finally:
+            await client.aclose()
     
     async def search_movies(self, query: str, page: int = 1) -> Dict:
         """
@@ -144,8 +134,8 @@ class TMDBService:
             "language": "en-US"
         }
         
+        client = self._create_client()
         try:
-            client = await self.get_client()
             response = await client.get(url, params=params)
             response.raise_for_status()
             data = response.json()
@@ -160,6 +150,8 @@ class TMDBService:
         except httpx.HTTPError as e:
             logger.error(f"TMDB search error: {str(e)}")
             return self._empty_response()
+        finally:
+            await client.aclose()
     
     @staticmethod
     def _empty_response() -> Dict:

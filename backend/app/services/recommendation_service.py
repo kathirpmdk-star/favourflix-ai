@@ -1,10 +1,13 @@
 """Recommendation service orchestrating Gemini and TMDB"""
+import logging
 from typing import Dict
 from sqlalchemy.orm import Session
 from .gemini_service import GeminiService
 from .tmdb_service import TMDBService
 from ..models.models import History
 from ..schemas.schemas import Movie
+
+logger = logging.getLogger("uvicorn")
 
 
 class RecommendationService:
@@ -42,6 +45,8 @@ class RecommendationService:
         ai_response = await self.gemini_service.mood_to_genres(mood)
         genre_ids = ai_response["genre_ids"]
         explanation = ai_response["explanation"]
+        
+        logger.info(f"Mood: '{mood}' -> Genres: {genre_ids}")
         
         # Step 2: Fetch movies from TMDB
         tmdb_response = await self.tmdb_service.discover_movies(
