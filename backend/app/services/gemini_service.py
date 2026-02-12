@@ -1,9 +1,12 @@
 """Gemini AI service for mood-to-genre conversion"""
 import google.generativeai as genai
+import logging
 from typing import Dict, List
 import json
 import re
 from ..config import settings
+
+logger = logging.getLogger("uvicorn")
 
 
 class GeminiService:
@@ -92,7 +95,7 @@ Only use genres from the available list. Be creative and empathetic in your expl
             }
             
         except Exception as e:
-            print(f"Gemini API error: {str(e)}")
+            logger.error(f"Gemini API error: {type(e).__name__}: {str(e)}")
             # Fallback response
             return {
                 "genre_ids": [18, 35],  # Drama and Comedy
