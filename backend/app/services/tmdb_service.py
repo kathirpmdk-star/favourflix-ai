@@ -44,8 +44,13 @@ class TMDBService:
         }
         
         try:
+            print(f"🔍 TMDB Request: {url}")
+            print(f"   Genres: {genres_str}")
+            print(f"   API Key: {self.api_key[:10]}...{self.api_key[-4:]}")
+            
             async with httpx.AsyncClient(timeout=10.0) as client:
                 response = await client.get(url, params=params)
+                print(f"✅ TMDB Response Status: {response.status_code}")
                 response.raise_for_status()
                 data = response.json()
                 
@@ -57,8 +62,27 @@ class TMDBService:
                 }
                 
         except httpx.HTTPStatusError as e:
-            print(f"TMDB API HTTP Error {e.response.status_code}: {e.response.text}")
-            print(f"Request URL: {url}?with_genres={genres_str}")
+            print(f"❌ TMDB API HTTP Error {e.response.status_code}")
+            print(f"   Response: {e.response.text[:200]}")
+            print(f"   Request URL: {url}?with_genres={genres_str}")
+            return {
+                "results": [],
+                "page": 1,
+                "total_pages": 1,
+                "total_results": 0
+            }
+        except httpx.ConnectError as e:
+            print(f"❌ TMDB API Connection Error: Cannot connect to TMDB")
+            print(f"   Details: {repr(e)}")
+            return {
+                "results": [],
+                "page": 1,
+                "total_pages": 1,
+                "total_results": 0
+            }
+        except httpx.TimeoutException as e:
+            print(f"❌ TMDB API Timeout Error")
+            print(f"   Details: {repr(e)}")
             return {
                 "results": [],
                 "page": 1,
@@ -66,7 +90,8 @@ class TMDBService:
                 "total_results": 0
             }
         except httpx.HTTPError as e:
-            print(f"TMDB API Connection Error: {str(e)}")
+            print(f"❌ TMDB API HTTP Error: {type(e).__name__}")
+            print(f"   Details: {repr(e)}")
             return {
                 "results": [],
                 "page": 1,
@@ -74,7 +99,10 @@ class TMDBService:
                 "total_results": 0
             }
         except Exception as e:
-            print(f"TMDB API Unexpected Error: {type(e).__name__} - {str(e)}")
+            print(f"❌ TMDB API Unexpected Error: {type(e).__name__}")
+            print(f"   Details: {repr(e)}")
+            import traceback
+            traceback.print_exc()
             return {
                 "results": [],
                 "page": 1,
